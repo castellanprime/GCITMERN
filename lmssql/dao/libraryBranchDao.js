@@ -27,10 +27,21 @@ var getBranch = function(branchId, cb){
     db.executeQueryStmt('select * from tbl_library_branch tlb where tlb.branchId = ?', [branchId], cb);
 }
 
+var getAllBranchesWithBooks = function(cb){
+    db.getAllObjects('select tlb.branchId as branchId, branchName, branchAddress, tb.bookId, title, pubId from tbl_library_branch tlb, tbl_book_copies tbc, tbl_book tb where tbc.branchId = tlb.branchId and tb.bookId = tbc.bookId and tbc.bookId IN (select bookId from tbl_book)',cb);
+}
+
+var getAllBooksForABranch= function(branchId, cb){
+    db.executeQueryStmt('select tb.bookId as bookId, title from tbl_book_copies tbc, tbl_book tb where tbc.bookId = tb.bookId and tbc.branchId = 3',
+        [branchId], cb);
+}
+
 module.exports = {
     addLibraryBranch,
     deleteBranch,
     getAllBranches,
+    getAllBooksForABranch,
+    getAllBranchesWithBooks,
     getBranch,
     updateBranchName,
     updateBranchAddress

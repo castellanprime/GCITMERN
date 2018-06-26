@@ -10,6 +10,8 @@ var removeBooKLoan = function(bookLoan, cb){
         [bookLoan.book.bookId, bookLoan.branch.branchId, bookLoan.borrower.cardNo, bookLoan.dateOut, bookLoan.dateOut], cb);
 }
 
+var getLoan
+
 var getCurrentLoans = function(bookLoan, cb){
     db.executeQueryStmt('select * from tbl_book_loans where branchId = ? and bookId = ? and cardNo = ? and dateIn is NULL',
         [bookLoan.branch.branchId, bookLoan.book.bookId, bookLoan.borrower.cardNo], cb);
@@ -37,7 +39,10 @@ var changeDueDate = function(bookLoan, cb){
 }
 
 var getAllBookLoans = function(cb){
-    db.getAllObjects('select * from tbl_book_loans', cb);
+    let sqlString = "select tblbl.dateOut, tblbl.dateIn, tblbl.dueDate, tb.bookId, tb.title, tblb.name, tblb.cardNo, tbllb.branchId"
+        + ", tbllb.branchName from tbl_book_loans tblbl, tbl_book tb, tbl_borrower tblb, tbl_library_branch tbllb"
+        + " where tblbl.branchId = tbllb.branchId and tblbl.cardNo = tblb.cardNo and tblbl.bookId = tb.bookId";
+    db.getAllObjects(sqlString, cb);
 }
 
 module.exports = {

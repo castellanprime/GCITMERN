@@ -29,6 +29,11 @@ var getAllGenresForABook = function(bookId, cb){
         [bookId], cb);
 }
 
+var getAllBooksForAGenre = function(genreId, cb){
+    db.executeQueryStmt('select tb.bookId as bookId, title from tbl_book_genres tbg, tbl_book tb where tbg.bookId = tb.bookId and tbg.genre_Id = ?',
+        [genreId], cb);
+}
+
 module.exports = {
     addGenre,
     updateGenreName,
@@ -36,5 +41,6 @@ module.exports = {
     removeGenreFromBook,
     getGenre, 
     getAllGenres,
+    getAllBooksForAGenre,
     getAllGenresForABook
 };

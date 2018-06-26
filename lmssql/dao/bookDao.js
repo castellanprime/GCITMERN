@@ -8,18 +8,13 @@ var getBook = function(bookId, cb){
     db.getOneObject('select * from tbl_book tba where tba.bookId = ?', [bookId], cb);
 }
 
-var getAllBooksForAnAuthor = function(authorId, cb){
-    db.executeQueryStmt('select tba.bookId, tb.title, tb.pubId from tbl_book_authors tba, tbl_book tb where tba.bookId = tb.bookId and tba.authorId = ?',
-        [authorId], cb);
-}
-
 var getAllBooksForAGenre = function(genreId, cb){
     db.executeQueryStmt('select tbg.bookId, tb.title, tb.pubId from tbl_book_genres tbg, tbl_book tb where tbg.bookId = tb.bookId and tbg.genre_Id = ?', 
         [genreId], cb);
 }
 
 var addBook = function(book, cb){
-    db.executeQueryStmt('insert into tbl_book (title, pubId) values (?, ?)', [book.title, book.publisher.publisherId], cb);
+    db.executeQueryStmt('insert into tbl_book (title, pubId) values (?, ?)', [book.title, book.pubId], cb);
 }
 
 var addBookAuthors = function(bookId, authorId, cb){
@@ -46,6 +41,13 @@ var deleteBook = function(bookId, cb){
     db.executeQueryStmt('delete from tbl_book where bookId = ?', [bookId], cb);
 }
 
+var getAuthorsGenresForABook = function(bookId, cb){
+    let sqlString = "select tg.genre_id, tg.genre_name, ta.authorId, ta.authorName from tbl_book_authors tba, tbl_book_genres tbg,"
+        + "tbl_author ta, tbl_genre tg, tbl_book tb where tbg.genre_id = tg.genre_id and tbg.bookId = tb.bookId and "
+        +" tba.authorId = ta.authorId and tba.bookId = tb.bookId and tb.bookId = ?"
+    db.executeQueryStmt(sqlString,[bookId], cb);
+}
+
 module.exports = {
     addBook,
     addBookAuthors,
@@ -54,7 +56,7 @@ module.exports = {
     getBooksByAuthorId,
     getBook,
     getAllBooks,
-    getAllBooksForAnAuthor,
+    getAuthorsGenresForABook,
     getAllBooksForAGenre,
     updateBookTitle,
     updateBookPublisher

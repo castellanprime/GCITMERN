@@ -4,10 +4,6 @@ var getAllAuthors = function(cb){
     db.getAllObjects('select * from tbl_author', cb);
 }
 
-var getAllAuthorsWithBooks = function(cb){
-    db.getAllObjects('select tbla.authorId as authorId, authorName, tbl.booKId as bookId, title, pubId from tbl_author tbla , tbl_book_authors tba, tbl_book tbl where tba.authorId = tbla.authorId and tbl.bookId = tba.bookId and tba.bookId IN (select bookId from tbl_book)', cb);
-}
-
 var addAuthor = function(author, cb){
     db.executeQueryStmt('insert into tbl_author(authorName) values(?)', [author.authorName], cb);
 }
@@ -29,6 +25,11 @@ var getAllAuthorsForABook = function(book, cb){
         [book.bookId], cb);
 }
 
+var getAllBooksForAnAuthor = function(authorId, cb){
+    db.executeQueryStmt('select tb.bookId as bookId, title from tbl_book_authors tba, tbl_book tb where tba.bookId = tb.bookId and tba.authorId = ?',
+        [authorId], cb);
+}
+
 var removeAuthorFromABook = function(authorId, bookId, cb){
     db.executeQueryStmt('delete from tbl_book_authors where authorId = ? and bookId = ?', [authorId, bookId], cb);
 }
@@ -40,6 +41,6 @@ module.exports = {
     updateAuthor,
     getAuthor,
     getAllAuthorsForABook,
-    getAllAuthorsWithBooks,
+    getAllBooksForAnAuthor,
     removeAuthorFromABook
 };
