@@ -8,46 +8,6 @@ let bookLoanDao = require('../dao/bookLoanDao');
 let libraryBookCopiesDao = require('../dao/libraryBookCopiesDao');
 
 
-var getBookById = function(bookId, books){
-    for (let i in books){
-        let data = books[i];
-        if (data.bookId === bookId){
-            return data;
-        }
-    }
-    return null;
-}
-
-var getBorrowerById = function(cardNo, borrowers){
-    for (let i in borrowers){
-        let data = borrowers[i];
-        if (data.cardNo === cardNo){
-            return data;
-        }
-    }
-    return null;
-}
-
-var getBranchById = function(branchId, branches){
-    for (let i in branches){
-        let data = branches[i];
-        if (data.branchId === branchId){
-            return data;
-        }
-    }
-    return null;
-}
-
-var getPublisherById = function(publisherId, publishers){
-    for (let i in publishers){
-        let data = publishers[i];
-        if (data.publisherId === publisherId){
-            return data;
-        }
-    }
-    return null;
-}
-
 var getBookLoanByDateOut = function(bookLoans, bookId, cardNo, dateOut){
     for (let i in bookLoans){
         let data = bookLoans[i];
@@ -58,7 +18,7 @@ var getBookLoanByDateOut = function(bookLoans, bookId, cardNo, dateOut){
     return null;
 }
 
-routes.post('/authors', function(req, res){
+routes.post('/api/admin/authors', function(req, res){
     let author = req.body;  
     authorDao.addAuthor(author, function(err, result){
         if (err){
@@ -72,14 +32,14 @@ routes.post('/authors', function(req, res){
             }
             res.status(201);
             console.log("1 record inserted");
-            let objUrl = "/admin/authors/" + result.insertId;
+            let objUrl = "/api/admin/authors/" + result.insertId;
             res.location(objUrl);
             res.send(result1);
         });  
     });
 });
 
-routes.patch('/authors/:authorId(\\d+)', function(req, res){
+routes.patch('/api/admin/authors/:authorId(\\d+)', function(req, res){
     let authorName = req.body.authorName;
     authorDao.updateAuthor(authorName, req.params.authorId, function(err, result){
         if (err){
@@ -98,7 +58,7 @@ routes.patch('/authors/:authorId(\\d+)', function(req, res){
     });
 });
 
-routes.get('/authors/:authorId(\\d+)', function(req, res){
+routes.get('/api/admin/authors/:authorId(\\d+)', function(req, res){
     authorDao.getAuthor(req.params.authorId, function(err, result){
         if (err){
             res.status(404);
@@ -110,7 +70,7 @@ routes.get('/authors/:authorId(\\d+)', function(req, res){
     });
 });
 
-routes.delete('/authors/:authorId(\\d+)', function(req, res){
+routes.delete('/api/admin/authors/:authorId(\\d+)', function(req, res){
     authorDao.deleteAuthor(req.params.authorId, function(err, result){
         if (err){
             res.status(404);
@@ -121,7 +81,7 @@ routes.delete('/authors/:authorId(\\d+)', function(req, res){
     });
 });
 
-routes.delete('/authors/:authorId(\\d+)/books/:bookId(\\d+)', function(req, res){
+routes.delete('/api/authors/:authorId(\\d+)/books/:bookId(\\d+)', function(req, res){
     authorDao.removeAuthorFromABook(req.params.authorId, req.params.bookId, function(err, result){
         if (err){
             res.status(400);
@@ -132,7 +92,7 @@ routes.delete('/authors/:authorId(\\d+)/books/:bookId(\\d+)', function(req, res)
     });
 });
 
-routes.get('/authors', function(req, res){
+routes.get('/api/admin/authors', function(req, res){
     authorDao.getAllAuthors(function(err, result){
         if (err){
             res.status(404);
@@ -145,7 +105,7 @@ routes.get('/authors', function(req, res){
     })
 });
 
-routes.get('/authors/:authorId(\\d+)/books', function(req, res){
+routes.get('/api/admin/authors/:authorId(\\d+)/books', function(req, res){
     authorDao.getAllBooksForAnAuthor(req.params.authorId, function(err, result){
         if (err){
             res.status(404);
@@ -158,7 +118,7 @@ routes.get('/authors/:authorId(\\d+)/books', function(req, res){
     });
 });
 
-routes.post('/branches', function(req, res){
+routes.post('/api/admin/branches', function(req, res){
     let libraryBranch = req.body;
     libraryBranchDao.addLibraryBranch(libraryBranch, function(err, result){
         if (err){
@@ -172,14 +132,14 @@ routes.post('/branches', function(req, res){
             }
             res.status(201);
             console.log("1 record inserted");
-            let objUrl = "/admin/branches/" + result.insertId;
+            let objUrl = "/api/admin/branches/" + result.insertId;
             res.location(objUrl);
             res.send(result1);
         }); 
     });
 });
 
-routes.patch('/branches/:branchId(\\d+)', function(req, res){
+routes.patch('/api/admin/branches/:branchId(\\d+)', function(req, res){
     if (Reflect.has(req.body, 'branchName') === true){
         let libraryBranch = Object.assign({}, req.body, {branchId: req.params.branchId});
         libraryBranchDao.updateBranchName(libraryBranch, function(err, result){
@@ -209,7 +169,7 @@ routes.patch('/branches/:branchId(\\d+)', function(req, res){
     }); 
 });
 
-routes.delete('/branches/:branchId(\\d+)', function(req, res){
+routes.delete('/api/admin/branches/:branchId(\\d+)', function(req, res){
     libraryBranchDao.deleteBranch(req.params.branchId, function(err, result){
         if (err){
             res.status(404);
@@ -220,7 +180,7 @@ routes.delete('/branches/:branchId(\\d+)', function(req, res){
     });
 });
 
-routes.get('/branches', function(req, res){
+routes.get('/api/admin/branches', function(req, res){
     libraryBranchDao.getAllBranches(function(err, result){
         if (err){
             res.status(404);
@@ -233,7 +193,7 @@ routes.get('/branches', function(req, res){
     })
 });
 
-routes.get('/branches/:branchId(\\d+)/books', function(req, res){
+routes.get('/api/admin/branches/:branchId(\\d+)/books', function(req, res){
     libraryBranchDao.getAllBooksForABranch(req.params.branchId, function(err, result){
         if (err){
             res.status(404);
@@ -246,45 +206,7 @@ routes.get('/branches/:branchId(\\d+)/books', function(req, res){
     });
 });
 
-routes.get('/branches/books', function(req, res){
-    libraryBranchDao.getAllBranchesWithBooks(function(err, result){
-        if (err){
-            res.status(404);
-            res.send("Not Found");
-        }
-        let st = result.length + " Records Returned";
-        console.log(st);
-        let resToSend = [], tempObjArr = {}, tempData = null;
-        for (index in result){
-            tempData = result[index];
-            if (!tempObjArr[tempData.branchId]){
-                tempObjArr[tempData.branchId] = {branchId: tempData.branchId, 
-                    branchName: tempData.branchName, 
-                    branchAddress: tempData.branchAddress};
-                tempObjArr[tempData.branchId].books = [];
-                let tempObj = Object.assign({}, tempData);
-                delete tempData.branchId;
-                delete tempData.branchName;
-                delete tempData.branchAddress;
-                tempObjArr[tempObj.branchId].books.push(tempData);
-            } else {
-                let tempObj1 = Object.assign({}, tempData);
-                delete tempData.branchId;
-                delete tempData.branchName;
-                delete tempData.branchAddress;
-                tempObjArr[tempObj1.branchId].books.push(tempData);
-            }
-        }
-        for (var prop in tempObjArr){
-            resToSend.push(tempObjArr[prop]);
-        }
-        let ste = resToSend.length + " Records Returned";
-        console.log(ste);
-        res.send(resToSend);
-    });
-});
-
-routes.post('/publishers', function(req, res){
+routes.post('/api/admin/publishers', function(req, res){
     let publisher = req.body;
     publisherDao.addPublisher(publisher, function(err, result){
         if (err){
@@ -298,14 +220,14 @@ routes.post('/publishers', function(req, res){
             }
             res.status(201);
             console.log("1 record inserted");
-            let objUrl = "/admin/publishers/" + result.insertId;
+            let objUrl = "/api/admin/publishers/" + result.insertId;
             res.location(objUrl);
             res.send(result1);
         });
     });
 });
 
-routes.patch('/publishers/:publisherId(\\d+)', function(req, res){
+routes.patch('/api/admin/publishers/:publisherId(\\d+)', function(req, res){
     if (Reflect.has(req.body, 'publisherName') === true){
         let publisher = Object.assign({}, req.body, {publisherId: req.params.publisherId});
         publisherDao.updatePublisherName(publisher, function(err, result){
@@ -345,7 +267,7 @@ routes.patch('/publishers/:publisherId(\\d+)', function(req, res){
     });
 });
 
-routes.delete('/publishers/:publisherId(\\d+)', function(req, res){
+routes.delete('/api/admin/publishers/:publisherId(\\d+)', function(req, res){
     publisherDao.deletePublisher(req.params.publisherId, function(err, result){
         if (err){
             res.status(404);
@@ -356,7 +278,7 @@ routes.delete('/publishers/:publisherId(\\d+)', function(req, res){
     });
 });
 
-routes.get('/publishers', function(req, res){
+routes.get('/api/admin/publishers', function(req, res){
     publisherDao.getAllPublishers(function(err, result){
         if (err){
             res.status(404);
@@ -369,7 +291,7 @@ routes.get('/publishers', function(req, res){
     })
 });
 
-routes.get('/publishers/:publisherId(\\d+)', function(req, res){
+routes.get('/api/admin/publishers/:publisherId(\\d+)', function(req, res){
     publisherDao.getPublisher(req.params.publisherId, function(err, result){
         if (err){
             res.status(404);
@@ -380,7 +302,7 @@ routes.get('/publishers/:publisherId(\\d+)', function(req, res){
     })
 });
 
-routes.post('/books', function(req, res){
+routes.post('/api/admin/books', function(req, res){
     let bookDto = req.body;
     bookDao.addBook(bookDto, function(err, result){
         if (err){
@@ -394,14 +316,14 @@ routes.post('/books', function(req, res){
             }
             res.status(201);
             console.log("1 record inserted");
-            let objUrl = "/admin/book/" + result.insertId;
+            let objUrl = "/api/admin/books/" + result.insertId;
             res.location(objUrl);
             res.send(result1);
         });
     });
 });
 
-routes.delete('/books/:bookId(\\d+)', function(req, res){
+routes.delete('/api/admin/books/:bookId(\\d+)', function(req, res){
     bookDao.deleteBook(req.params.bookId, function(err, result){
         if (err){
             res.status(404);
@@ -412,7 +334,7 @@ routes.delete('/books/:bookId(\\d+)', function(req, res){
     });
 });
 
-routes.get('/books', function(req, res){
+routes.get('/api/admin/books', function(req, res){
     bookDao.getAllBooks(function(err, result){
         if (err){
             res.status(404);
@@ -425,7 +347,7 @@ routes.get('/books', function(req, res){
     });
 });
 
-routes.get('/books/:bookId(\\d+)/metadata', function(req, res){
+routes.get('/api/admin/books/:bookId(\\d+)/metadata', function(req, res){
     bookDao.getAuthorsGenresForABook(req.params.bookId, function(err, result){
         if (err){
             res.status(404);
@@ -447,7 +369,7 @@ routes.get('/books/:bookId(\\d+)/metadata', function(req, res){
     });
 });
 
-routes.patch('/books/:bookId(\\d+)', function(req, res){
+routes.patch('/api/admin/books/:bookId(\\d+)', function(req, res){
     let bookDto = req.body;
     if (Reflect.has(bookDto, 'title') === true){
         bookDao.updateBookTitle(bookDto.title, req.params.bookId, function(err1, result1){
@@ -491,7 +413,7 @@ routes.patch('/books/:bookId(\\d+)', function(req, res){
     });
 });
 
-routes.post('/genres', function(req, res){
+routes.post('/api/admin/genres', function(req, res){
     let genre = req.body;
     genreDao.addGenre(genre, function(err, result){
         if (err){
@@ -505,14 +427,14 @@ routes.post('/genres', function(req, res){
             }
             res.status(201);
             console.log("1 record inserted");
-            let objUrl = "/admin/genres/" + result.insertId;
+            let objUrl = "/api/admin/genres/" + result.insertId;
             res.location(objUrl);
             res.send(result1);
         });
     });
 });
 
-routes.patch('/genres/:genreId(\\d+)', function(req, res){
+routes.patch('/api/admin/genres/:genreId(\\d+)', function(req, res){
     let genre = {genre_name: req.body.genre_name, genre_id: req.params.genreId};
     genreDao.updateGenreName(genre, function(err, result){
         if (err){
@@ -530,7 +452,7 @@ routes.patch('/genres/:genreId(\\d+)', function(req, res){
     });
 });
 
-routes.delete('/genres/:genreId(\\d+)', function(req, res){
+routes.delete('/api/admin/genres/:genreId(\\d+)', function(req, res){
     genreDao.deleteGenre(req.params.genreId, function(err, result){
         if (err){
             res.status(404);
@@ -542,7 +464,7 @@ routes.delete('/genres/:genreId(\\d+)', function(req, res){
     });
 });
 
-routes.delete('/genres/:genreId(\\d+)/book/:bookId(\\d+)', function(req, res){
+routes.delete('/api/admin/genres/:genreId(\\d+)/book/:bookId(\\d+)', function(req, res){
     genreDao.removeGenreFromBook(req.params.genreId, req.params.bookId, function(err, result){
         if (err){
             res.status(404);
@@ -554,7 +476,7 @@ routes.delete('/genres/:genreId(\\d+)/book/:bookId(\\d+)', function(req, res){
     });
 });
 
-routes.get('/genres', function(req, res){
+routes.get('/api/admin/genres', function(req, res){
     genreDao.getAllGenres(function(err, result){
         if (err){
             res.status(404);
@@ -567,7 +489,7 @@ routes.get('/genres', function(req, res){
     })
 });
 
-routes.get('/genres/:genreId(\\d+)/books', function(req, res){
+routes.get('/api/admin/genres/:genreId(\\d+)/books', function(req, res){
     genreDao.getAllBooksForAGenre(req.params.genreId, function(err, result){
         if (err){
             res.status(404);
@@ -580,7 +502,7 @@ routes.get('/genres/:genreId(\\d+)/books', function(req, res){
     });
 });
 
-routes.get('/loans', function(req, res){
+routes.get('/api/admin/loans', function(req, res){
     bookLoanDao.getAllBookLoans(function(err, result){
         if (err){
             res.status(404);
@@ -594,7 +516,7 @@ routes.get('/loans', function(req, res){
 });
 
 
-routes.patch('/loan/dueDate', function(req, res){
+routes.patch('/api/admin/loan/dueDate', function(req, res){
     let bookLoan = req.body;
     bookLoanDao.changeDueDate(bookLoan, function(err, result){
         if (err){
@@ -613,7 +535,7 @@ routes.patch('/loan/dueDate', function(req, res){
     });
 });
 
-routes.get('/branches/:branchid(\\d+)/loans/current', function(req, res){
+routes.get('/api/admin/branches/:branchid(\\d+)/loans/current', function(req, res){
     bookLoanDao.getCurrentLoansForBranch(req.params.branchId, function(err, result){
         if (err){
             res.status(404);
