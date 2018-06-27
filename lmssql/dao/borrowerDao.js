@@ -5,16 +5,20 @@ var addBorrower = function(borrower, cb){
         [borrower.name, borrower.address, borrower.phone], cb);
 }
 
-var updateBorrowerName = function(borrowerName, cardNo, cb){
-    db.executeQueryStmt('update tbl_borrower set name = ? where cardNo = ?', [borrowerName, cardNo], cb);
+var getBorrower = function(cardNo, cb){
+    db.executeQueryStmt('select * from tbl_borrower where cardNo = ?', [cardNo], cb);
 }
 
-var updateBorrowerAddress = function(borrowerAddress, cardNo, cb){
-    db.executeQueryStmt('update tbl_borrower set address = ? where cardNo = ?', [borrowerAddress, cardNo], cb);
+var updateBorrowerName = function(borrower, cb){
+    db.executeQueryStmt('update tbl_borrower tb set tb.name = ? where tb.cardNo = ?', [borrower.name, borrower.cardNo], cb);
 }
 
-var updateBorrowerPhone = function(borrowerPhone, cardNo, cb){
-    db.executeQueryStmt('update tbl_borrower set phone = ? where cardNo = ?', [borrowerPhone, cardNo], cb);
+var updateBorrowerAddress = function(borrower, cb){
+    db.executeQueryStmt('update tbl_borrower tb set tb.address = ? where tb.cardNo = ?', [borrower.address, borrower.cardNo], cb);
+}
+
+var updateBorrowerPhone = function(borrower, cb){
+    db.executeQueryStmt('update tbl_borrower tb set tb.phone = ? where tb.cardNo = ?', [borrower.phone, borrower.cardNo], cb);
 }
 
 var deleteBorrower = function(cardNo, cb){
@@ -29,6 +33,7 @@ module.exports = {
     addBorrower,
     deleteBorrower,
     getAllBorrowers,
+    getBorrower,
     updateBorrowerName,
     updateBorrowerAddress,
     updateBorrowerPhone

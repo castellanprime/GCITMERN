@@ -2,19 +2,17 @@ var db = require('./db');
 
 var addBookLoan = function(bookLoan, cb){
     db.executeQueryStmt('insert into tbl_book_loans(bookId, branchId, cardNo, dateOut, dueDate, dateIn) values(?, ?, ?, NOW(), DATE_ADD(NOW(), INTERVAL 7 DAY), NULL)',
-        [bookLoan.book.bookId, bookLoan.branch.branchId, bookLoan.borrower.cardNo], cb);
+        [bookLoan.bookId, bookLoan.branchId, bookLoan.cardNo], cb);
 }
 
 var removeBooKLoan = function(bookLoan, cb){
     db.executeQueryStmt('update tbl_book_loans set dateIn = NOW() where bookId = ? and branchId = ? and cardNo = ? and dateOut = ? and dateIn IS NULL',
-        [bookLoan.book.bookId, bookLoan.branch.branchId, bookLoan.borrower.cardNo, bookLoan.dateOut, bookLoan.dateOut], cb);
+        [bookLoan.bookId, bookLoan.branch.branchId, bookLoan.cardNo, bookLoan.dateOut], cb);
 }
-
-var getLoan
 
 var getCurrentLoans = function(bookLoan, cb){
     db.executeQueryStmt('select * from tbl_book_loans where branchId = ? and bookId = ? and cardNo = ? and dateIn is NULL',
-        [bookLoan.branch.branchId, bookLoan.book.bookId, bookLoan.borrower.cardNo], cb);
+        [bookLoan.branchId, bookLoan.bookId, bookLoan.cardNo], cb);
 }
 
 var getCurrentLoansForBranch = function(branchId, cb){
@@ -35,7 +33,7 @@ var getCurrentLoansForBorrower = function(cardNo, cb){
 
 var changeDueDate = function(bookLoan, cb){
     db.executeQueryStmt('update tbl_book_loans set dueDate = ? where bookId = ? and branchId = ? and cardNo = ? and dateOut = ?',
-        [bookLoan.dueDate, bookLoan.book.bookId, bookLoan.branch.branchId, bookLoan.borrower.cardNo, bookLoan.dateOut], cb);
+        [bookLoan.dueDate, bookLoan.bookId, bookLoan.branchId, bookLoan.cardNo, bookLoan.dateOut], cb);
 }
 
 var getAllBookLoans = function(cb){
