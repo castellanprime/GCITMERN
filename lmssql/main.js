@@ -1,6 +1,5 @@
 var express = require("express");
 var bodyParser = require("body-parser");
-var adminRoutes = require('./controllers/adminController');
 
 var app = express();
 
@@ -11,7 +10,9 @@ app.use(function(req, res, next) {
     next();
 });
 app.use(bodyParser.json());
-app.use("/admin", adminRoutes);
+app.use(require('./controllers/adminController'));
+app.use(require('./controllers/borrowerController'));
+app.use(require('./controllers/librarianController'));
 
 app.listen(3000);
 console.log('Server running in port: 3000 ...');
